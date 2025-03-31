@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 # Installation de Laravel
-# RUN composer global require laravel/installer
+RUN composer global require laravel/installer
 
 # Installation de Angular CLI
 # RUN npm install -g @angular/cli
