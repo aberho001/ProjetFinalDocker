@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mon_app_db
+      MYSQL_USER: mon_user
+      MYSQL_PASSWORD: mon_password
+    volumes:
+      - db_data:/var/lib/mysql  # Stockage persistant de la DB
+      - ./sql:/docker-entrypoint-initdb.d  # Exécute SQL si présent
+    ports:
+      - "3307:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8080:80"
+
+  web:
+    build: ./web
+    container_name: web_server
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - web_app_angular:/srv/localhost-angular/
+      - web_app_laravel:/srv/localhost-laravel/
+    ports:
+      - "8000:8000"
+      - "8001:4200"
+
+volumes:
+  db_data:
+  web_app_angular:
+  web_app_laravel:
